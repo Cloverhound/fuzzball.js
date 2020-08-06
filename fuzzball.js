@@ -262,12 +262,22 @@
             var partial = _partial_ratio(str1, str2, options) * partial_scale;
             var ptsor = partial_token_sort_ratio(str1, str2, options) * unbase_scale * partial_scale;
             var ptser = partial_token_set_ratio(str1, str2, options) * unbase_scale * partial_scale;
-            return Math.round(Math.max(base, partial, ptsor, ptser));
+            var result = Math.max(base, partial, ptsor, ptser);
+            if (options.exact_ratio) {
+                return result;
+            } else {
+                return Math.round(result);
+            }
         }
         else {
             var tsor = token_sort_ratio(str1, str2, options) * unbase_scale;
             var tser = token_set_ratio(str1, str2, options) * unbase_scale;
-            return Math.round(Math.max(base, tsor, tser));
+            var result = Math.max(base, tsor, tser);
+            if (options.exact_ratio) {
+                return result;
+            } else {
+                return Math.round(result);
+            }
         }
     }
 
@@ -656,7 +666,12 @@
         if (options.ratio_alg && options.ratio_alg === "difflib") {
             var m = new SequenceMatcher(null, str1, str2);
             var r = m.ratio();
-            return Math.round(100 * r);
+            var result = 100 * r;
+            if (options.exact_ratio) {
+                return result;
+            } else {
+                return Math.round(result);
+            }
         }
         //to match behavior of python-Levenshtein/fuzzywuzzy, substitution cost is 2 if not specified, or would default to 1
         if (typeof options.subcost === "undefined") options.subcost = 2;
@@ -687,7 +702,12 @@
                 lensum = str1.length + str2.length;
             }
         }
-        return Math.round(100 * ((lensum - levdistance)/lensum));
+        var result = 100 * ((lensum - levdistance)/lensum);
+        if (options.exact_ratio) {
+            return result;
+        } else {
+            return Math.round(result);
+        }
     }
 
     function _partial_ratio(str1, str2, options) {
